@@ -1,0 +1,136 @@
+version: "3.8"
+
+services:
+
+  api:
+    build:
+      context: .
+    image: top-card-server
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    depends_on:
+      - nats
+      - redis
+      - jeager
+      - prometheus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
+      - "traefik.http.services.api-gw.loadbalancer.server.port=3000"
+    networks:
+      - internal
+
+  greeter:
+    build:
+      context: .
+    image: top-card-server
+    env_file: docker-compose.env
+    environment:
+      SERVICES: greeter
+    depends_on:
+      - nats
+      - redis
+      - jeager
+      - prometheus
+    networks:
+      - internal
+
+  products:
+    build:
+      context: .
+    image: top-card-server
+    env_file: docker-compose.env
+    environment:
+      SERVICES: products
+    depends_on:
+      - mongo
+      - nats
+      - redis
+      - jeager
+      - prometheus     
+    networks:
+      - internal
+  
+  auth:
+    build:
+      context: .
+    image: top-card-server
+    env_file: docker-compose.env
+    environment:
+      SERVICES: auth
+    depends_on:
+      - mongo
+      - nats
+      - redis
+      - jeager
+      - prometheus     
+    networks:
+      - internal
+  mongo:
+    image: mongo:5.0.5
+    volumes:
+      - data:/data/db
+    networks:
+      - internal
+    ports:
+      - "27017:27017"
+  nats:
+    image: nats:2
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    networks:
+      - internal
+    ports:
+      - "6379:6379"
+  
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - internal
+    ports:
+      - "3030:3030"
+      - "9090:9090" 
+
+
+  jeager:
+    image: jaegertracing/all-in-one:latest
+    networks:
+      - internal
+    ports:
+      - "8080:80"
+      - "5775:5775/udp" 
+      - "6831:6831/udp" 
+      - "6832:6832/udp" 
+      - "5778:5778" 
+      - "16686:16686" 
+      - "14250:14250" 
+      - "14268:14268" 
+      - "14269:14269" 
+      - "9411:9411" 
+
+
+  traefik:
+    image: traefik:v2.6
+    command:
+      - "--api.insecure=true" # Don't do that in production!
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 3000:80
+      - 3001:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - internal
+      - default
+
+networks:
+  internal:
+
+volumes:
+  data:
