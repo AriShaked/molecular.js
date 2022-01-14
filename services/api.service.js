@@ -25,10 +25,27 @@ module.exports = {
 
 		routes: [
 			{
+				path: "/admin",
+                authorization: true,
+                whitelist: [
+                    "$node.*",
+                    "users.*",
+                ]
+            },{
 				path: "/api",
-
+				authentication: false,
+				authorization: false,
 				whitelist: [
 					"**"
+				],
+
+			},
+            {
+				path: "/",
+				authentication: false,
+				authorization: false,
+				whitelist: [
+					"auth.*",
 				],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -49,9 +66,13 @@ module.exports = {
 
 				aliases: {
 
-					"GET auth/logout": "auth.logout",
-					"POST auth/login": "auth.login",
-					"REST auth/validate": "auth.validateToken",
+					"POST auth/signup": "auth.signup",
+
+					"POST auth/login/otp": "auth.otpLogin",
+					"POST auth/otp/verify": "auth.verifyOtp",
+					
+					"POST auth/login": "auth.login", // with pw
+					"POST auth/logout": "auth.logout",
 				},
 
 				/** 
@@ -134,7 +155,7 @@ module.exports = {
 		 */
 		async authenticate(ctx, route, req) {
 			// Read the token from header
-			const auth = req.headers["authorization"];
+			const auth = req.headers["Authorization"];
 
 			if (auth && auth.startsWith("Bearer")) {
 				const token = auth.slice(7);

@@ -22,36 +22,36 @@ services:
     networks:
       - internal
 
-  greeter:
-    build:
-      context: .
-    image: top-card-server
-    env_file: docker-compose.env
-    environment:
-      SERVICES: greeter
-    depends_on:
-      - nats
-      - redis
-      - jeager
-      - prometheus
-    networks:
-      - internal
+  # greeter:
+  #   build:
+  #     context: .
+  #   image: top-card-server
+  #   env_file: docker-compose.env
+  #   environment:
+  #     SERVICES: greeter
+  #   depends_on:
+  #     - nats
+  #     - redis
+  #     - jeager
+  #     - prometheus
+  #   networks:
+  #     - internal
 
-  products:
-    build:
-      context: .
-    image: top-card-server
-    env_file: docker-compose.env
-    environment:
-      SERVICES: products
-    depends_on:
-      - mongo
-      - nats
-      - redis
-      - jeager
-      - prometheus     
-    networks:
-      - internal
+  # products:
+  #   build:
+  #     context: .
+  #   image: top-card-server
+  #   env_file: docker-compose.env
+  #   environment:
+  #     SERVICES: products
+  #   depends_on:
+  #     - mongo
+  #     - nats
+  #     - redis
+  #     - jeager
+  #     - prometheus     
+  #   networks:
+  #     - internal
   
   auth:
     build:

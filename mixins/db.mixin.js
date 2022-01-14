@@ -54,25 +54,24 @@ module.exports = function(collection) {
 		}
 	};
 
-	if (process.env.MONGO_URI) {
+	// if (process.env.MONGO_URI) {
 		// Mongo adapter
 		const MongoAdapter = require("moleculer-db-adapter-mongo");
-
-		schema.adapter = new MongoAdapter(process.env.MONGO_URI);
+		schema.adapter = new MongoAdapter("mongodb://localhost:27017/top-card-server", { useUnifiedTopology: true });
 		schema.collection = collection;
-	} else if (process.env.NODE_ENV === 'test') {
-		// NeDB memory adapter for testing
-		schema.adapter = new DbService.MemoryAdapter();
-	} else {
-		// NeDB file DB adapter
+	// } else if (process.env.NODE_ENV === 'test') {
+	// 	// NeDB memory adapter for testing
+	// 	schema.adapter = new DbService.MemoryAdapter();
+	// } else {
+	// 	// NeDB file DB adapter
 
-		// Create data folder
-		if (!fs.existsSync("./data")) {
-			fs.mkdirSync("./data");
-		}
+	// 	// Create data folder
+	// 	if (!fs.existsSync("./data")) {
+	// 		fs.mkdirSync("./data");
+	// 	}
 
-		schema.adapter = new DbService.MemoryAdapter({ filename: `./data/${collection}.db` });
-	}
+	// 	schema.adapter = new DbService.MemoryAdapter({ filename: `./data/${collection}.db` });
+	// }
 
 	return schema;
 };
