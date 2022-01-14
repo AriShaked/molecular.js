@@ -11,9 +11,11 @@ On the welcome page you can test the generated services via API Gateway and chec
 In the terminal, try the following commands:
 - `nodes` - List all connected nodes.
 - `actions` - List all registered service actions.
-- `call greeter.hello` - Call the `greeter.hello` action.
-- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
-- `call products.list` - List the products (call the `products.list` action).
+
+
+- `auth/signup` create user
+- `auth/login/otp` login with userName - send otp , otp cached to redis to limited time
+- `auth/otp/verify` validate otp and sends back jwt header
 
 
 ## Services
