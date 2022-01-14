@@ -51,7 +51,8 @@ module.exports = {
         },
 
         async sendMessage(xml) {
-            const res =  await this._http.post(`${AppConfiguration.get('unicell').url}?XML=${xml}`);
+            const url = 'https://secureapi.soprano.co.il' // todo: takeout to env file
+            const res =  await this._http.post(`${url}?XML=${xml}`);
             //parse respone
             await xml2js.parseString(res.data, (err, result) => {
                 console.dir(result);
